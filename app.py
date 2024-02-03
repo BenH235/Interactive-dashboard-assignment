@@ -16,6 +16,10 @@ from haversine import haversine, Unit
 import datapoint
 from config import API_KEY
 
+# Utility functions
+def miles_to_meters(miles):
+    return miles * 1609.34
+
 @st.cache_data
 def fetch_geojson():
     url = 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/National_Nature_Reserves_England/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson'
@@ -107,20 +111,50 @@ forecast_df['precipitation']=prec_list
 information.write(forecast_df)
 
 m = folium.Map(tiles='OpenStreetMap', location=(50, 3), zoom_start=6)
-
-folium.GeoJson(gdf.to_json(), name='geojson_layer').add_to(m)
 folium.Marker(location=(lat, lon), popup="Central Point").add_to(m)
+
+radius_miles = miles_to_meters(20)
 
 # Create a CircleMarker to represent the distance
 circle_marker = folium.Circle(
     location=(lat, lon),
-    radius=25_000,
-    color='blue',
-    fill=True,
-    fill_color='blue',
-    fill_opacity=0.1,
-    popup="5000 meter radius"
+    radius=radius_miles,
+    color='green',
+    fill=False,
+    dash_array='3',  # Set dash_array for a dotted line
+    popup="5000 meter radius",
+    z_index=0
 )
+
+popup = folium.GeoJsonPopup(
+    fields=["NNR_NAME", 'distance'],
+    aliases=["Name", 'Distance (in miles)'],
+    localize=True,
+    labels=True,
+    style="background-color: yellow;",
+)
+tooltip = folium.GeoJsonTooltip(
+    fields=["NNR_NAME"],
+    aliases=["Name"],
+    localize=True,
+    sticky=False,
+    labels=True,
+    style="""
+        background-color: #F0EFEF;
+        border: 2px solid black;
+        border-radius: 3px;
+        box-shadow: 3px;
+    """,
+    max_width=800,
+)
+condition = lambda feature: 'green' if feature['properties']['distance']<20 else 'blue'
+
+folium.GeoJson(gdf.to_json(), name='geojson_layer', 
+    tooltip=tooltip,
+    popup=popup, style_function=lambda feature: {
+        'fillColor': condition(feature),
+        'fillOpacity': 0.75,
+    },).add_to(m)
 
 
 
