@@ -74,7 +74,9 @@ with st.expander("Expand to see instructions on using this application"):
         Guidlines on using this app:\n
         1. Input valid UK postcode.\n
         2. Specify distance from postcode to travel to a NNR (this is as the crow flies distance).\n
-        3. Visualise the reserve on the map. A breakdown is then given showing local NNR. A five day forecast is also provided to make informed decision of which reserve to visit.
+        3. Visualise the reserve on the map. In addition to the map, the following breakdown is also supplied:\n
+            *(i)* A table for local NNR (ordered by locality), alongside other information (downloadable to CSV).\n
+            *(ii)* A five day weather forecast (provided by the Met Office) on temperature, precipitation and wind speed, to make informed decision of which reserve to visit.
     ''')
 
 # An application that helps you find local nature reserves in England. The application suggests a reserve based on locality and short term weather forecasts.')
