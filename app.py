@@ -207,8 +207,7 @@ if postcode_entered:
     locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
 
     # Get weather data for selected locations
-    # Create connection to DataPoint with your API key
-    conn = datapoint.connection(api_key=API_KEY)
+    conn = datapoint.connection(api_key=st.secrets['API_KEY'])
     locs_forecast = []
     for locs, name in zip(locations, selection.Name.to_list()):
     # Get the nearest site for my latitude and longitude
