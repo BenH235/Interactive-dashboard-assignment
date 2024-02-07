@@ -83,7 +83,7 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
 st.title('Local Nature Reserve Finder')
 st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and conserved to protect and enhance some of the most important habitats, species and geology (see more [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis app helps you find local NNR relative to a postcode you can specify. The distance is then calculated (as the crow flies) and suggests reserves that are within distances you can specify.")
 
-with st.expander("Application instructions"):
+with st.expander("**Application instructions**"):
     st.write('''
         **Step 1.** Input valid English postcode.\n
         **Step 2.** Specify maximum travel distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
