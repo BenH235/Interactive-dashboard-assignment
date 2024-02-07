@@ -14,7 +14,6 @@ import requests
 from shapely.geometry import Point
 from haversine import haversine, Unit
 import datapoint
-from config import API_KEY
 
 
 # Utility functions
