@@ -158,7 +158,7 @@ if postcode_entered:
                 ascending = True).reset_index(drop=True))
 
             # Folium map
-            m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
+            m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=11)
             # Add marker
             folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
             # Convert distance to meters
