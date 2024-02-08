@@ -221,7 +221,7 @@ if postcode_entered:
         # Further information in app
         with information:
             # Dataframe
-            st.subheader('Local nature reserve table', help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected).')
+            st.subheader('Local nature reserve table', help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
             selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
             ascending = True).reset_index(drop=True))
 
