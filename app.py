@@ -268,7 +268,6 @@ if postcode_entered:
         fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
         fig.update_layout(template = 'seaborn', 
         title = f'Five day weather forecast: {weather_type}', 
-        title = '',
         xaxis_title='',
         yaxis_title = f'{weather_type}',
         legend=dict(
