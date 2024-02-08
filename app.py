@@ -138,138 +138,142 @@ if postcode_entered:
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
     # Check distance within specified distance
     nearby_parks = gdf[gdf['distance'] <= distance_miles]
-    # Filter datafram 
-    nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
-    {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
-    # Folium map
-    m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
-    # Add marker
-    folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
-    # Convert distance to meters
-    radius_miles = miles_to_meters(distance_miles)
-    # Define circle around marker
-    circle_marker = folium.Circle(
-    location=(lat, lon),
-    radius=radius_miles,
-    color='grey',
-    fill=False,
-    dash_array='3',  # Set dash_array for a dotted line
-    popup=f"{distance_miles} radius",
-    z_index=0
-    )
-    # Define popup over polygons
-    popup = folium.GeoJsonPopup(
-        fields=["NNR_NAME", 'distance'],
-        aliases=["Name", 'Distance (in miles)'],
-        localize=True,
-        labels=True,
-        style="background-color: yellow;",
-    )
-    tooltip = folium.GeoJsonTooltip(
-        fields=["NNR_NAME"],
-        aliases=["Name"],
-        localize=True,
-        sticky=False,
-        labels=True,
-        style="""
-            background-color: #F0EFEF;
-            border: 2px solid black;
-            border-radius: 3px;
-            box-shadow: 3px;
-        """,
+    if len(nearby_parks) == 0:
+        st.warning('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="⚠️")
+    else:
+        # Filter datafram 
+        nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
+        {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
-    )
-    # Add polygons
-    folium.GeoJson(gdf.to_json(), name='geojson_layer', 
-        tooltip=tooltip,
-        popup=popup, style_function=lambda feature: {
-            'fillColor': 'indianred',
-            'fillOpacity': 0.9,
-            'color': 'grey',
-            'weight': 0.1
-        },).add_to(m)
+        # Folium map
+        m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
+        # Add marker
+        folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
+        # Convert distance to meters
+        radius_miles = miles_to_meters(distance_miles)
+        # Define circle around marker
+        circle_marker = folium.Circle(
+        location=(lat, lon),
+        radius=radius_miles,
+        color='grey',
+        fill=False,
+        dash_array='3',  # Set dash_array for a dotted line
+        popup=f"{distance_miles} radius",
+        z_index=0
+        )
+        # Define popup over polygons
+        popup = folium.GeoJsonPopup(
+            fields=["NNR_NAME", 'distance'],
+            aliases=["Name", 'Distance (in miles)'],
+            localize=True,
+            labels=True,
+            style="background-color: yellow;",
+        )
+        tooltip = folium.GeoJsonTooltip(
+            fields=["NNR_NAME"],
+            aliases=["Name"],
+            localize=True,
+            sticky=False,
+            labels=True,
+            style="""
+                background-color: #F0EFEF;
+                border: 2px solid black;
+                border-radius: 3px;
+                box-shadow: 3px;
+            """,
 
-    # Add circle
-    circle_marker.add_to(m)
-    # Add layer control
-    folium.LayerControl().add_to(m)
+        )
+        # Add polygons
+        folium.GeoJson(gdf.to_json(), name='geojson_layer', 
+            tooltip=tooltip,
+            popup=popup, style_function=lambda feature: {
+                'fillColor': 'indianred',
+                'fillOpacity': 0.9,
+                'color': 'grey',
+                'weight': 0.1
+            },).add_to(m)
 
-    # Add map to app 
-    with mapping:
-        # ref: https://github.com/gee-community/geemap/issues/713
-        st.markdown("""
-                <style>
-                iframe {
-                    width: 100%;
-                    min-height: 400px;
-                    height: 100%:
-                }
-                </style>
-                """, unsafe_allow_html=True)
-        # Display the map
-        folium_static(m, width=1000,height=650)
+        # Add circle
+        circle_marker.add_to(m)
+        # Add layer control
+        folium.LayerControl().add_to(m)
 
-    # Further information in app
-    with information:
-        # Dataframe
-        selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
-        ascending = True).reset_index(drop=True))
+        # Add map to app 
+        with mapping:
+            # ref: https://github.com/gee-community/geemap/issues/713
+            st.markdown("""
+                    <style>
+                    iframe {
+                        width: 100%;
+                        min-height: 400px;
+                        height: 100%:
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+            # Display the map
+            folium_static(m, width=1000,height=650)
 
-    # Get lat/lon list of NNR's within distance threshold
-    locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
+        # Further information in app
+        with information:
+            # Dataframe
+            selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
+            ascending = True).reset_index(drop=True))
 
-    # Get weather data for selected locations
-    conn = datapoint.connection(api_key=st.secrets['API_KEY'])
-    locs_forecast = []
-    for locs, name in zip(locations, selection.Name.to_list()):
-    # Get the nearest site for my latitude and longitude
-        site = conn.get_nearest_forecast_site(locs.y, locs.x)
+        # Get lat/lon list of NNR's within distance threshold
+        locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
 
-        # Get a forecast for my nearest site with 3 hourly timesteps
-        forecast = conn.get_forecast_for_site(site.id, "daily")
-        date_list = []
-        text_list = []
-        temp_list = []
-        prec_list = []
-        wind_list = []
-        for day in forecast.days:
+        # Get weather data for selected locations
+        conn = datapoint.connection(api_key=st.secrets['API_KEY'])
+        locs_forecast = []
+        for locs, name in zip(locations, selection.Name.to_list()):
+        # Get the nearest site for my latitude and longitude
+            site = conn.get_nearest_forecast_site(locs.y, locs.x)
 
-            # Loop through time steps and print out info
-            for timestep in day.timesteps:
-                date_list.append(timestep.date)
-                text_list.append(timestep.weather.text)
-                temp_list.append(timestep.temperature.value)
-                prec_list.append(timestep.precipitation.value)
-                wind_list.append(timestep.wind_speed.value)
-                
-        forecast_df=pd.DataFrame()
-        forecast_df['date']=date_list
-        forecast_df['text']=text_list
-        forecast_df['Tempurature (°C)']=temp_list
-        forecast_df['Chance of precipitation (%)']=prec_list
-        forecast_df['Wind speed (mph)']=wind_list
-        forecast_df['location'] = name
+            # Get a forecast for my nearest site with 3 hourly timesteps
+            forecast = conn.get_forecast_for_site(site.id, "daily")
+            date_list = []
+            text_list = []
+            temp_list = []
+            prec_list = []
+            wind_list = []
+            for day in forecast.days:
 
-        locs_forecast.append(forecast_df)
+                # Loop through time steps and print out info
+                for timestep in day.timesteps:
+                    date_list.append(timestep.date)
+                    text_list.append(timestep.weather.text)
+                    temp_list.append(timestep.temperature.value)
+                    prec_list.append(timestep.precipitation.value)
+                    wind_list.append(timestep.wind_speed.value)
+                    
+            forecast_df=pd.DataFrame()
+            forecast_df['date']=date_list
+            forecast_df['text']=text_list
+            forecast_df['Tempurature (°C)']=temp_list
+            forecast_df['Chance of precipitation (%)']=prec_list
+            forecast_df['Wind speed (mph)']=wind_list
+            forecast_df['location'] = name
 
-    forecast_df = pd.concat(locs_forecast)
+            locs_forecast.append(forecast_df)
 
-    # Add plotly figure showing weather
-    fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
-    fig.update_layout(template = 'seaborn', 
-    title = 'Five day weather forecast', 
-    xaxis_title='',
-    yaxis_title = f'{weather_type}',
-    legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.4,
-        xanchor="right",
-        x=1
-    ))
-    # Add Plotly graph to app
-    information.plotly_chart(fig, use_container_width=True)
+        forecast_df = pd.concat(locs_forecast)
+
+        # Add plotly figure showing weather
+        fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
+        fig.update_layout(template = 'seaborn', 
+        title = 'Five day weather forecast', 
+        xaxis_title='',
+        yaxis_title = f'{weather_type}',
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.4,
+            xanchor="right",
+            x=1
+        ))
+        # Add Plotly graph to app
+        information.plotly_chart(fig, use_container_width=True)
 
 
 
