@@ -144,142 +144,145 @@ if postcode_entered:
     if len(nearby_parks) == 0:
         st.error('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="🚨")
     else:
-        # Filter datafram 
-        nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
-        {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
-        # Folium map
-        m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
-        # Add marker
-        folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
-        # Convert distance to meters
-        radius_miles = miles_to_meters(distance_miles)
-        # Define circle around marker
-        circle_marker = folium.Circle(
-        location=(lat, lon),
-        radius=radius_miles,
-        color='grey',
-        fill=False,
-        dash_array='3',  # Set dash_array for a dotted line
-        popup=f"{distance_miles} radius",
-        z_index=0
-        )
-        # Define popup over polygons
-        popup = folium.GeoJsonPopup(
-            fields=["NNR_NAME", 'distance'],
-            aliases=["Name", 'Distance (in miles)'],
-            localize=True,
-            labels=True,
-            style="background-color: yellow;",
-        )
-        tooltip = folium.GeoJsonTooltip(
-            fields=["NNR_NAME"],
-            aliases=["Name"],
-            localize=True,
-            sticky=False,
-            labels=True,
-            style="""
-                background-color: #F0EFEF;
-                border: 2px solid black;
-                border-radius: 3px;
-                box-shadow: 3px;
-            """,
+        with st.spinner('Loading...'):
+            # Filter datafram 
+            nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
+            {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
-        )
-        # Add polygons
-        folium.GeoJson(gdf.to_json(), name='geojson_layer', 
-            tooltip=tooltip,
-            popup=popup, style_function=lambda feature: {
-                'fillColor': 'indianred',
-                'fillOpacity': 0.9,
-                'color': 'grey',
-                'weight': 0.1
-            },).add_to(m)
+            # Further information in app (local reserves table)
+            with information:
+                # Dataframe
+                st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
+                selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
+                ascending = True).reset_index(drop=True))
 
-        # Add circle
-        circle_marker.add_to(m)
-        # Add layer control
-        folium.LayerControl().add_to(m)
+            # Folium map
+            m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
+            # Add marker
+            folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
+            # Convert distance to meters
+            radius_miles = miles_to_meters(distance_miles)
+            # Define circle around marker
+            circle_marker = folium.Circle(
+            location=(lat, lon),
+            radius=radius_miles,
+            color='grey',
+            fill=False,
+            dash_array='3',  # Set dash_array for a dotted line
+            popup=f"{distance_miles} radius",
+            z_index=0
+            )
+            # Define popup over polygons
+            popup = folium.GeoJsonPopup(
+                fields=["NNR_NAME", 'distance'],
+                aliases=["Name", 'Distance (in miles)'],
+                localize=True,
+                labels=True,
+                style="background-color: yellow;",
+            )
+            tooltip = folium.GeoJsonTooltip(
+                fields=["NNR_NAME"],
+                aliases=["Name"],
+                localize=True,
+                sticky=False,
+                labels=True,
+                style="""
+                    background-color: #F0EFEF;
+                    border: 2px solid black;
+                    border-radius: 3px;
+                    box-shadow: 3px;
+                """,
 
-        # Add map to app 
-        with mapping:
-            # ref: https://github.com/gee-community/geemap/issues/713
-            st.markdown("""
-                    <style>
-                    iframe {
-                        width: 100%;
-                        min-height: 400px;
-                        height: 100%:
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
-            st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings', divider='green')
-            st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
-            # Display the map
-            folium_static(m, width=1000,height=650)
+            )
+            condition = lambda feature: '#3776ab' if feature['properties']['NNR_NAME'].isin(selection.Name.to_list()) else 'indianred'
+            # Add polygons
+            folium.GeoJson(gdf.to_json(), name='geojson_layer', 
+                tooltip=tooltip,
+                popup=popup, style_function=lambda feature: {
+                    'fillColor': condition(feature),
+                    'fillOpacity': 0.9,
+                    'color': 'grey',
+                    'weight': 0.1
+                },).add_to(m)
 
-        # Further information in app
-        with information:
-            # Dataframe
-            st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
-            selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
-            ascending = True).reset_index(drop=True))
+            # Add circle
+            circle_marker.add_to(m)
+            # Add layer control
+            folium.LayerControl().add_to(m)
 
-        # Get lat/lon list of NNR's within distance threshold
-        locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
+            # Add map to app 
+            with mapping:
+                # ref: https://github.com/gee-community/geemap/issues/713
+                st.markdown("""
+                        <style>
+                        iframe {
+                            width: 100%;
+                            min-height: 400px;
+                            height: 100%:
+                        }
+                        </style>
+                        """, unsafe_allow_html=True)
+                st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves selected in the table and all other reserves are shaded red).', divider='green')
+                st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
+                # Display the map
+                folium_static(m, width=1000,height=650)
 
-        # Get weather data for selected locations
-        conn = datapoint.connection(api_key=st.secrets['API_KEY'])
-        locs_forecast = []
-        for locs, name in zip(locations, selection.Name.to_list()):
-        # Get the nearest site for my latitude and longitude
-            site = conn.get_nearest_forecast_site(locs.y, locs.x)
+            # Get lat/lon list of NNR's within distance threshold
+            locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
 
-            # Get a forecast for my nearest site with 3 hourly timesteps
-            forecast = conn.get_forecast_for_site(site.id, "daily")
-            date_list = []
-            text_list = []
-            temp_list = []
-            prec_list = []
-            wind_list = []
-            for day in forecast.days:
+            # Get weather data for selected locations
+            conn = datapoint.connection(api_key=st.secrets['API_KEY'])
+            locs_forecast = []
+            for locs, name in zip(locations, selection.Name.to_list()):
+            # Get the nearest site for my latitude and longitude
+                site = conn.get_nearest_forecast_site(locs.y, locs.x)
 
-                # Loop through time steps and print out info
-                for timestep in day.timesteps:
-                    date_list.append(timestep.date)
-                    text_list.append(timestep.weather.text)
-                    temp_list.append(timestep.temperature.value)
-                    prec_list.append(timestep.precipitation.value)
-                    wind_list.append(timestep.wind_speed.value)
-                    
-            forecast_df=pd.DataFrame()
-            forecast_df['date']=date_list
-            forecast_df['text']=text_list
-            forecast_df['Tempurature (°C)']=temp_list
-            forecast_df['Chance of precipitation (%)']=prec_list
-            forecast_df['Wind speed (mph)']=wind_list
-            forecast_df['location'] = name
+                # Get a forecast for my nearest site with 3 hourly timesteps
+                forecast = conn.get_forecast_for_site(site.id, "daily")
+                date_list = []
+                text_list = []
+                temp_list = []
+                prec_list = []
+                wind_list = []
+                for day in forecast.days:
 
-            locs_forecast.append(forecast_df)
+                    # Loop through time steps and print out info
+                    for timestep in day.timesteps:
+                        date_list.append(timestep.date)
+                        text_list.append(timestep.weather.text)
+                        temp_list.append(timestep.temperature.value)
+                        prec_list.append(timestep.precipitation.value)
+                        wind_list.append(timestep.wind_speed.value)
+                        
+                forecast_df=pd.DataFrame()
+                forecast_df['date']=date_list
+                forecast_df['text']=text_list
+                forecast_df['Tempurature (°C)']=temp_list
+                forecast_df['Chance of precipitation (%)']=prec_list
+                forecast_df['Wind speed (mph)']=wind_list
+                forecast_df['location'] = name
 
-        forecast_df = pd.concat(locs_forecast)
+                locs_forecast.append(forecast_df)
 
-        # Add plotly figure showing weather
-        fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
-        fig.update_layout(template = 'seaborn', 
-        title = f'Five day weather forecast: {weather_type}', 
-        xaxis_title='',
-        yaxis_title = f'{weather_type}',
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.3,
-            xanchor="right",
-            x=1
-        ))
-        # Add Plotly graph to app
-        information.plotly_chart(fig, use_container_width=True)
-        information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
+            forecast_df = pd.concat(locs_forecast)
+
+            # Add plotly figure showing weather
+            fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
+            fig.update_layout(template = 'seaborn', 
+            title = f'Five day weather forecast: {weather_type}', 
+            xaxis_title='',
+            yaxis_title = f'{weather_type}',
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.3,
+                xanchor="right",
+                x=1
+            ))
+            # Add Plotly graph to app
+            information.plotly_chart(fig, use_container_width=True)
+            information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
 
 
 
