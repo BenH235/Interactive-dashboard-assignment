@@ -139,7 +139,7 @@ if postcode_entered:
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
     # Check distance within specified distance
-    nearby_parks = gdf[gdf['distance'] <= distance_miles]
+    _nearby_parks = gdf[gdf['distance'] <= distance_miles]
 
     if len(nearby_parks) == 0:
         st.error('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="🚨")
@@ -147,7 +147,7 @@ if postcode_entered:
 
         with st.spinner('Loading...'):
             # Filter datafram 
-            nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
+            nearby_parks = _nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
             {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
             # Further information in app (local reserves table)
@@ -195,7 +195,8 @@ if postcode_entered:
                 """,
 
             )
-            condition = lambda feature: '#3776ab' if feature['properties']['NNR_NAME'] in (selection.Name.to_list()) else 'indianred'
+            condition = lambda feature: '#3776ab' if feature['properties']['GlobalID'] in (_nearby_parks.GlobalID.to_list()) else 'indianred'
+
             # Add polygons
             folium.GeoJson(gdf.to_json(), name='geojson_layer', 
                 tooltip=tooltip,
@@ -223,7 +224,7 @@ if postcode_entered:
                         }
                         </style>
                         """, unsafe_allow_html=True)
-                st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves selected in the table and all other reserves are shaded red).', divider='green')
+                st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves with "Show weather forecast" rows checked in the right hand table and all other reserves are shaded red). If colours are difficult to differentiate, hovering over the region will show the name of the site.', divider='green')
                 st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
                 # Display the map
                 folium_static(m, width=1000,height=650)
