@@ -195,7 +195,7 @@ if postcode_entered:
                 """,
 
             )
-            condition = lambda feature: '#3776ab' if ((feature['properties']['GlobalID'] in (_nearby_parks[_nearby_parks].GlobalID.to_list())) and (feature['properties']['LNR_NAME'] in selection['Name'].to_list())) else 'indianred'
+            condition = lambda feature: '#3776ab' if ((feature['properties']['GlobalID'] in (_nearby_parks[_nearby_parks].GlobalID.to_list())) & (feature['properties']['LNR_NAME'] in selection['Name'].to_list())) else 'indianred'
 
             # Add polygons
             folium.GeoJson(gdf.to_json(), name='geojson_layer', 
