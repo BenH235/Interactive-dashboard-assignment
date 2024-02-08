@@ -98,7 +98,7 @@ with st.expander("**Application instructions**"):
 gdf = fetch_geojson()
 
 # User settings
-postcode_settings, distance_settings, map_settings, weather_settings = st.columns((2, 2, 2, 2))
+postcode_settings, distance_settings, weather_settings, map_settings = st.columns((2, 2, 2, 2))
 postcode = postcode_settings.text_input('Enter valid English postcode', value="", 
 max_chars=None, 
 key=None, 
