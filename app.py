@@ -141,7 +141,7 @@ if postcode_entered:
     # Check distance within specified distance
     _nearby_parks = gdf[gdf['distance'] <= distance_miles]
 
-    if len(nearby_parks) == 0:
+    if len(_nearby_parks) == 0:
         st.error('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="🚨")
     else:
 
