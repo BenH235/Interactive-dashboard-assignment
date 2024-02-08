@@ -80,7 +80,9 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
                   )
 
 st.title('Local Nature Reserve Finder')
-st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and conserved to protect and enhance some of the most important habitats, species and geology (see more [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis app helps you find local NNR relative to a postcode you can specify. The distance is then calculated (as the crow flies) and suggests reserves that are within distances you can specify.")
+st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and \
+conserved to protect and enhance some of the most important habitats, species and geology \
+(see more [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis app helps you find local NNR relative to a postcode you can specify. The distance is then calculated (as the crow flies) and suggests reserves that are within distances you can specify. In addition, short term weather forecasts are also provided for local reserves.")
 
 with st.expander("**Application instructions**"):
     st.write('''
@@ -97,18 +99,24 @@ with st.expander("**Application instructions**"):
 # Bring in NNR data
 gdf = fetch_geojson()
 
-# Split streamlit app into two columns
-mapping, information = st.columns((3, 2))
 
-# First column: At the top, user settings
-postcode_settings, distance_settings, map_settings = mapping.columns(3)
-postcode = postcode_settings.text_input('Please enter valid UK postcode', value="", max_chars=None, key=None, type="default", help=None)
-distance_miles = distance_settings.number_input('Please enter distance (in miles) from postcode', min_value=0, max_value=100, value=15)
+# User settings
+postcode_settings, distance_settings, map_settings = st.columns(3)
+postcode = postcode_settings.text_input('Please enter valid UK postcode', value="", 
+max_chars=None, 
+key=None, 
+type="default", 
+help=None)
+distance_miles = distance_settings.number_input('Please enter maximum travel distance (* **in miles** *) from postcode', 
+min_value=0, 
+max_value=100, 
+value=15)
 map_type = map_settings.selectbox(label ='Change basemap (optional)', options = [
     'OpenStreetMap',
     'cartodbpositron',
     'Cartodb dark_matter'
 ], index=0)
+
 
 # setting lat/lon based on postcode 
 try:
@@ -120,6 +128,9 @@ except:
     st.warning('Please enter valid postcode to use this application', icon="⚠️")
     postcode_entered = False
 
+# Split streamlit app into two columns
+mapping, information = st.columns((3, 2))
+
 # Only running code once postcode has been entered
 if postcode_entered:
 
@@ -128,7 +139,8 @@ if postcode_entered:
     # Check distance within specified distance
     nearby_parks = gdf[gdf['distance'] <= distance_miles]
     # Filter datafram 
-    nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
+    nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
+    {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
 
     # Folium map
     m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
@@ -201,7 +213,8 @@ if postcode_entered:
     # Further information in app
     with information:
         # Dataframe
-        selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', ascending = True).reset_index(drop=True))
+        selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
+        ascending = True).reset_index(drop=True))
 
     # Get lat/lon list of NNR's within distance threshold
     locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
@@ -243,7 +256,8 @@ if postcode_entered:
     forecast_df = pd.concat(locs_forecast)
 
     # User input type of weather
-    weather_type = information.radio('Select weather feature', ['Tempurature (°C)', 'Chance of precipitation (%)', 'Wind speed (mph)'], index=0, horizontal=True)
+    weather_type = information.radio('Select weather feature', ['Tempurature (°C)', 
+    'Chance of precipitation (%)', 'Wind speed (mph)'], index=0, horizontal=True)
 
     # Add plotly figure showing weather
     fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
