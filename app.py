@@ -82,16 +82,18 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
 st.title('Local Nature Reserve Finder')
 st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and \
 conserved to protect and enhance some of the most important habitats, species and geology \
-(see more [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis app helps you find local NNR relative to a postcode you can specify. The distance is then calculated (as the crow flies) and suggests reserves that are within distances you can specify. In addition, short term weather forecasts are also provided for local reserves.")
+(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find local NNR relative to a postcode you can specify (within a certain distance). \
+In addition to highlighting nearby reserves, a five day weather forecast at each local reserve is also available, in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
     st.write('''
-        **Step 1.** Input valid English postcode.\n
+        **Step 1.** Input valid UK postcode (note, this application only shows nature reserves in England).\n
         **Step 2.** Specify maximum travel distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
-        **Step 3.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
-        **Step 4.** Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
-        * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded as a CSV.
-        * A five day weather forecast (provided by the Met Office) on temperature, precipitation and wind speed, to make a more informed decision on which reserve to visit.
+        **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).
+        **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
+        Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
+        * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
+        * A five day weather forecast (provided by the Met Office) on temperature, precipitation and wind speed.
     ''')
 
 # Bring in NNR data
@@ -99,7 +101,7 @@ gdf = fetch_geojson()
 
 # User settings
 postcode_settings, distance_settings, weather_settings, map_settings = st.columns((2, 2, 2, 2))
-postcode = postcode_settings.text_input('Enter valid English postcode', value="", 
+postcode = postcode_settings.text_input('Enter valid UK postcode', value="", 
 max_chars=None, 
 key=None, 
 type="default", 
@@ -219,7 +221,7 @@ if postcode_entered:
         # Further information in app
         with information:
             # Dataframe
-            st.subheader('Local nature reserve table', help='Please click the tick box if you wish to show the weather forecast for a specific nature reserve (by default, the weather for the closest reserve is selected)')
+            st.subheader('Local nature reserve table', help='Please click the tick box if you wish to show the weather forecast for a specific nature reserve (by default, the weather for the closest reserve is selected). Note, you can choose multiple reserves and compare the forecast for each on the graph below.')
             selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
             ascending = True).reset_index(drop=True))
 
@@ -265,7 +267,7 @@ if postcode_entered:
         # Add plotly figure showing weather
         fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
         fig.update_layout(template = 'seaborn', 
-        title = 'Five day weather forecast', 
+        title = f'Five day weather forecast: {weather_type}', 
         xaxis_title='',
         yaxis_title = f'{weather_type}',
         legend=dict(
