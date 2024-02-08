@@ -214,14 +214,14 @@ if postcode_entered:
                     </style>
                     """, unsafe_allow_html=True)
             st.subheader('National nature reserves map', help='If the map is difficult to read, try changing the basemap in the above settings', divider='green')
-            st.caption('The dashed circle represents the threshold travel distance (specified above) centered at the input postcode. Hover over a nature reserve (shaded regions on the map) to show the name of the reserve.')
+            st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
             # Display the map
             folium_static(m, width=1000,height=650)
 
         # Further information in app
         with information:
             # Dataframe
-            st.subheader('Local nature reserve table', help='Please click the tick box if you wish to show the weather forecast for a specific nature reserve (by default, the weather for the closest reserve is selected). Note, you can choose multiple reserves and compare the forecast for each on the graph below.')
+            st.subheader('Local nature reserve table', help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected).')
             selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
             ascending = True).reset_index(drop=True))
 
@@ -267,7 +267,8 @@ if postcode_entered:
         # Add plotly figure showing weather
         fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
         fig.update_layout(template = 'seaborn', 
-        title = f'Five day weather forecast: {weather_type}', 
+        # title = f'Five day weather forecast: {weather_type}', 
+        title = '',
         xaxis_title='',
         yaxis_title = f'{weather_type}',
         legend=dict(
@@ -278,6 +279,7 @@ if postcode_entered:
             x=1
         ))
         # Add Plotly graph to app
+        information.subheader(f'Five day weather forecast: {weather_type}', info = 'To compare weather at multiple nature reserves, check additional boxes in the "Show weather forecast" column for all sites of interest.')
         information.plotly_chart(fig, use_container_width=True)
 
 
