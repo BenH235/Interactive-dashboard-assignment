@@ -213,7 +213,7 @@ if postcode_entered:
                     }
                     </style>
                     """, unsafe_allow_html=True)
-            st.subheader('National nature reserves map', help='If the map is difficult to read, try changing the basemap in the above settings', divider='green')
+            st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings', divider='green')
             st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
             # Display the map
             folium_static(m, width=1000,height=650)
@@ -221,7 +221,7 @@ if postcode_entered:
         # Further information in app
         with information:
             # Dataframe
-            st.subheader('Local nature reserve table', help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
+            st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
             selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
             ascending = True).reset_index(drop=True))
 
