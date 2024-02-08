@@ -88,7 +88,7 @@ In addition to highlighting nearby reserves, a five day weather forecast at each
 with st.expander("**Application instructions**"):
     st.write('''
         **Step 1.** Input valid UK postcode (note, this application only shows nature reserves in England).\n
-        **Step 2.** Specify maximum travel distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
+        **Step 2.** Specify maximum travelling distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
         **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).\n
         **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
         Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
