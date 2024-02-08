@@ -68,7 +68,7 @@ def dataframe_with_selections(df):
 # Function to bring in NNR geoJSON data
 @st.cache_data
 def fetch_geojson():
-    url = 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/National_Nature_Reserves_England/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson'
+    url = 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Local_Nature_Reserves_England/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson'
     r = requests.get(url)
     gdf = gpd.GeoDataFrame.from_features(r.json()["features"], crs='EPSG:4326')
     return gdf
@@ -147,8 +147,8 @@ if postcode_entered:
 
         with st.spinner('Loading...'):
             # Filter datafram 
-            nearby_parks = _nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
-            {'NNR_NAME': 'Name', 'distance':'distance (miles)'})
+            nearby_parks = _nearby_parks[['LNR_NAME', 'distance']].rename(columns  = \
+            {'LNR_NAME': 'Name', 'distance':'distance (miles)'})
 
             # Further information in app (local reserves table)
             with information:
@@ -175,14 +175,14 @@ if postcode_entered:
             )
             # Define popup over polygons
             popup = folium.GeoJsonPopup(
-                fields=["NNR_NAME", 'distance'],
+                fields=["LNR_NAME", 'distance'],
                 aliases=["Name", 'Distance (in miles)'],
                 localize=True,
                 labels=True,
                 style="background-color: yellow;",
             )
             tooltip = folium.GeoJsonTooltip(
-                fields=["NNR_NAME"],
+                fields=["LNR_NAME"],
                 aliases=["Name"],
                 localize=True,
                 sticky=False,
@@ -230,7 +230,7 @@ if postcode_entered:
                 folium_static(m, width=1000,height=650)
 
             # Get lat/lon list of NNR's within distance threshold
-            locations = gdf[gdf.NNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
+            locations = gdf[gdf.LNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
 
             # Get weather data for selected locations
             conn = datapoint.connection(api_key=st.secrets['API_KEY'])
