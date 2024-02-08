@@ -140,7 +140,7 @@ if postcode_entered:
     nearby_parks = gdf[gdf['distance'] <= distance_miles]
 
     if len(nearby_parks) == 0:
-        st.warning('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="⚠️")
+        st.error('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="🚨")
     else:
         # Filter datafram 
         nearby_parks = nearby_parks[['NNR_NAME', 'distance']].rename(columns  = \
