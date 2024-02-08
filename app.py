@@ -65,7 +65,7 @@ def dataframe_with_selections(df):
     selected_rows = edited_df[edited_df["Show weather forecast"]]
     return selected_rows.drop("Show weather forecast", axis=1)
 
-# Function to bring in NNR geoJSON data
+# Function to bring in LNR geoJSON data
 @st.cache_data
 def fetch_geojson():
     url = 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Local_Nature_Reserves_England/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson'
@@ -80,9 +80,9 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
                   )
 
 st.title('Local Nature Reserve Finder')
-st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and \
-conserved to protect and enhance some of the most important habitats, species and geology \
-(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find the location of nearby NNRs (within a certain travelling distance). \
+st.caption("Local Nature Reserves (LNRs) are designated areas for conservation and enjoyment of nature\
+within the local community. They provide natural habitats for wildlife and offer people the oppertunity to learn, study and enjoy nature\
+(find more information about LNRs [here](https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::local-nature-reserves-england/about)).\nThis application helps you find the location of nearby LNRs (within a certain travelling distance). \
 In addition to highlighting nearby reserves, a five day weather forecast at each local site is also provided, in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
@@ -96,7 +96,7 @@ with st.expander("**Application instructions**"):
         * A five day weather forecast on temperature, precipitation and wind speed.
     ''')
 
-# Bring in NNR data
+# Bring in LNR data
 gdf = fetch_geojson()
 
 # User settings
@@ -153,7 +153,7 @@ if postcode_entered:
             # Further information in app (local reserves table)
             with information:
                 # Dataframe
-                st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different NNRs')
+                st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different LNRs')
                 selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
                 ascending = True).reset_index(drop=True))
 
@@ -229,7 +229,7 @@ if postcode_entered:
                 # Display the map
                 folium_static(m, width=1000,height=650)
 
-            # Get lat/lon list of NNR's within distance threshold
+            # Get lat/lon list of LNR's within distance threshold
             locations = gdf[gdf.LNR_NAME.isin(selection.Name.to_list())]['geometry'].centroid.to_list()
 
             # Get weather data for selected locations
