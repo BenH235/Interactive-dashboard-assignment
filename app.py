@@ -80,9 +80,9 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
                   )
 
 st.title('Local Nature Reserve Finder')
-st.caption("Local Nature Reserves (LNRs) are designated areas for conservation and enjoyment of nature\
-within the local community. They provide natural habitats for wildlife and offer people the oppertunity to learn, study and enjoy nature\
-(find more information about LNRs [here](https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::local-nature-reserves-england/about)).\nThis application helps you find the location of nearby LNRs (within a certain travelling distance). \
+st.caption("Local Nature Reserves (LNRs) are designated areas for conservation and enjoyment of nature \
+within the local community. They provide natural habitats for wildlife and offer people the oppertunity to learn, study and enjoy nature \
+(find more information [here](https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::local-nature-reserves-england/about)).\nThis application helps you find the location of nearby LNRs (within a certain travelling distance). \
 In addition to highlighting nearby reserves, a five day weather forecast at each local site is also provided, in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
@@ -158,7 +158,7 @@ if postcode_entered:
                 ascending = True).reset_index(drop=True))
 
             # Folium map
-            m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=11)
+            m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9.5)
             # Add marker
             folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
             # Convert distance to meters
