@@ -93,7 +93,7 @@ with st.expander("**Application instructions**"):
         **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
         Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
         * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
-        * A five day weather forecast (provided by the Met Office) on temperature, precipitation and wind speed.
+        * A five day weather forecast on temperature, precipitation and wind speed.
     ''')
 
 # Bring in NNR data
@@ -279,7 +279,8 @@ if postcode_entered:
             x=1
         ))
         # Add Plotly graph to app
-        information.subheader(f'Five day weather forecast: {weather_type}', info = 'To compare weather at multiple nature reserves, check additional boxes in the "Show weather forecast" column for all sites of interest.')
+        information.subheader(f'Five day weather forecast: {weather_type}', help = 'To compare weather at multiple nature reserves, check additional boxes in the "Show weather forecast" column for all sites of interest.')
+        information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts, [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
         information.plotly_chart(fig, use_container_width=True)
 
 
