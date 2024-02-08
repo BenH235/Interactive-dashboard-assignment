@@ -145,7 +145,7 @@ if postcode_entered:
     # Folium map
     m = folium.Map(tiles=map_type, location=(lat, lon), zoom_start=9)
     # Add marker
-    folium.Marker(location=(lat, lon), popup="Central Point").add_to(m)
+    folium.Marker(location=(lat, lon), popup=f"{postcode}").add_to(m)
     # Convert distance to meters
     radius_miles = miles_to_meters(distance_miles)
     # Define circle around marker
@@ -256,8 +256,8 @@ if postcode_entered:
     forecast_df = pd.concat(locs_forecast)
 
     # User input type of weather
-    weather_type = information.radio('Select weather feature', ['Tempurature (°C)', 
-    'Chance of precipitation (%)', 'Wind speed (mph)'], index=0, horizontal=True)
+    weather_type = information.selectbox(label = 'Select weather feature', options = ['Tempurature (°C)', 
+    'Chance of precipitation (%)', 'Wind speed (mph)'], index=0)
 
     # Add plotly figure showing weather
     fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
