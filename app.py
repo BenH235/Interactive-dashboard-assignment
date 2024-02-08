@@ -82,8 +82,8 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
 st.title('Local Nature Reserve Finder')
 st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and \
 conserved to protect and enhance some of the most important habitats, species and geology \
-(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find the location of nearby NNR's (within a certain travelling distance). \
-In addition to highlighting nearby reserves, a five day weather forecast at each local reserve is also available, in order to help make a more informed decision on which reserve to visit.")
+(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find the location of nearby NNRs (within a certain travelling distance). \
+In addition to highlighting nearby reserves, a five day weather forecast at each local site is also provided, in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
     st.write('''
