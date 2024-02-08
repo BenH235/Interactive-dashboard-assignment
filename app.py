@@ -94,20 +94,17 @@ with st.expander("**Application instructions**"):
         * A five day weather forecast (provided by the Met Office) on temperature, precipitation and wind speed, to make a more informed decision on which reserve to visit.
     ''')
 
-# An application that helps you find local nature reserves in England. The application suggests a reserve based on locality and short term weather forecasts.')
-
 # Bring in NNR data
 gdf = fetch_geojson()
 
-
 # User settings
-postcode_settings, distance_settings, map_settings = st.columns(3)
-postcode = postcode_settings.text_input('Please enter valid UK postcode', value="", 
+postcode_settings, distance_settings, map_settings, weather_settings = st.columns((2, 2, 2, 2))
+postcode = postcode_settings.text_input('Enter valid English postcode', value="", 
 max_chars=None, 
 key=None, 
 type="default", 
 help=None)
-distance_miles = distance_settings.number_input('Please enter maximum travel distance (* **in miles** *) from postcode', 
+distance_miles = distance_settings.number_input('Enter maximum travel distance (* **in miles** *)', 
 min_value=0, 
 max_value=100, 
 value=15)
@@ -116,6 +113,9 @@ map_type = map_settings.selectbox(label ='Change basemap (optional)', options = 
     'cartodbpositron',
     'Cartodb dark_matter'
 ], index=0)
+# User input type of weather
+weather_type = weather_settings.selectbox(label = 'Select weather feature', options = ['Tempurature (°C)', 
+'Chance of precipitation (%)', 'Wind speed (mph)'], index=0)
 
 
 # setting lat/lon based on postcode 
@@ -152,7 +152,7 @@ if postcode_entered:
     circle_marker = folium.Circle(
     location=(lat, lon),
     radius=radius_miles,
-    color='green',
+    color='grey',
     fill=False,
     dash_array='3',  # Set dash_array for a dotted line
     popup=f"{distance_miles} radius",
@@ -254,10 +254,6 @@ if postcode_entered:
         locs_forecast.append(forecast_df)
 
     forecast_df = pd.concat(locs_forecast)
-
-    # User input type of weather
-    weather_type = information.selectbox(label = 'Select weather feature', options = ['Tempurature (°C)', 
-    'Chance of precipitation (%)', 'Wind speed (mph)'], index=0)
 
     # Add plotly figure showing weather
     fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
