@@ -267,7 +267,7 @@ if postcode_entered:
         # Add plotly figure showing weather
         fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
         fig.update_layout(template = 'seaborn', 
-        # title = f'Five day weather forecast: {weather_type}', 
+        title = f'Five day weather forecast: {weather_type}<br><sup>Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts, [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)</sup>', 
         title = '',
         xaxis_title='',
         yaxis_title = f'{weather_type}',
@@ -279,8 +279,6 @@ if postcode_entered:
             x=1
         ))
         # Add Plotly graph to app
-        information.subheader(f'Five day weather forecast: {weather_type}', help = 'To compare weather at multiple nature reserves, check additional boxes in the "Show weather forecast" column for all sites of interest.')
-        information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts, [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
         information.plotly_chart(fig, use_container_width=True)
 
 
