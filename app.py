@@ -268,7 +268,6 @@ if postcode_entered:
         fig = px.line(forecast_df, x ='date', y=weather_type, color='location')
         fig.update_layout(template = 'seaborn', 
         title = f'Five day weather forecast: {weather_type}<br><sup>Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts, [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)</sup>', 
-        title = '',
         xaxis_title='',
         yaxis_title = f'{weather_type}',
         legend=dict(
