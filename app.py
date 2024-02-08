@@ -82,14 +82,14 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
 st.title('Local Nature Reserve Finder')
 st.caption("Natural England’s National Nature Reserves (NNR) are designated areas that are managed and \
 conserved to protect and enhance some of the most important habitats, species and geology \
-(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find local NNR relative to a postcode you can specify (within a certain distance). \
+(find more information [here](https://www.gov.uk/government/collections/national-nature-reserves-in-england#:~:text=National%20Nature%20Reserves%20(%20NNRs%20)%20were,'outdoor%20laboratories'%20for%20research.)).\nThis application helps you find the location of nearby NNR's (within a certain travelling distance). \
 In addition to highlighting nearby reserves, a five day weather forecast at each local reserve is also available, in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
     st.write('''
         **Step 1.** Input valid UK postcode (note, this application only shows nature reserves in England).\n
         **Step 2.** Specify maximum travel distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
-        **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).
+        **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).\n
         **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
         Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
         * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
@@ -279,7 +279,7 @@ if postcode_entered:
         ))
         # Add Plotly graph to app
         information.plotly_chart(fig, use_container_width=True)
-        information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts, [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
+        information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
 
 
 
