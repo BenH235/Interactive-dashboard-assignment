@@ -110,7 +110,7 @@ distance_miles = distance_settings.number_input('Enter maximum travel distance (
 min_value=0, 
 max_value=100, 
 value=15)
-map_type = map_settings.selectbox(label ='Change basemap ((* **optional** *)', options = [
+map_type = map_settings.selectbox(label ='Change basemap (* **optional** *)', options = [
     'OpenStreetMap',
     'cartodbpositron',
     'Cartodb dark_matter'
