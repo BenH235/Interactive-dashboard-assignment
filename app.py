@@ -88,10 +88,10 @@ In addition to highlighting nearby reserves, a five day weather forecast at each
 with st.expander("**Application instructions**"):
     st.write('''
         **Step 1.** Input valid UK postcode (note, this application only shows nature reserves in England).\n
-        **Step 2.** Specify maximum travelling distance from postcode to a nature reserve (this will be "as the crow flies" distance).\n
+        **Step 2.** Specify maximum travelling distance (this will be "as the crow flies" distance) from postcode to a nature reserve (in miles).\n
         **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).\n
         **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
-        Visualise local reserves on the output map. In addition to the map, the following breakdown is also supplied:\n
+        Once these inputs have been specified, you can visualise local reserves on the output map. In addition to an interactive map, the following breakdown is also supplied:\n
         * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
         * A five day weather forecast on temperature, precipitation and wind speed.
     ''')
@@ -110,7 +110,7 @@ distance_miles = distance_settings.number_input('Enter maximum travel distance (
 min_value=0, 
 max_value=100, 
 value=15)
-map_type = map_settings.selectbox(label ='Change basemap (optional)', options = [
+map_type = map_settings.selectbox(label ='Change basemap ((* **optional** *)', options = [
     'OpenStreetMap',
     'cartodbpositron',
     'Cartodb dark_matter'
@@ -142,7 +142,7 @@ if postcode_entered:
     _nearby_parks = gdf[gdf['distance'] <= distance_miles]
 
     if len(_nearby_parks) == 0:
-        st.error('No nature reserves found near postcode. Please increase travel distance and ensure postcode resides in England.', icon="🚨")
+        st.error('No nature reserves found near postcode. Please increase travelling distance and ensure postcode resides in England.', icon="🚨")
     else:
 
         with st.spinner('Loading...'):
@@ -224,8 +224,8 @@ if postcode_entered:
                         }
                         </style>
                         """, unsafe_allow_html=True)
-                st.subheader('Mapping nature reserves', help='If the map is difficult to read, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves with "Show weather forecast" rows checked in the right hand table and all other reserves are shaded red). If colours are difficult to differentiate, hovering over the region will show the name of the site.', divider='green')
-                st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. Feel free to click and drag anywhere on the map to look at other nature reserves.')
+                st.subheader('Mapping nature reserves', help='If the nature reserves are difficult to spot, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves with "Show weather forecast" rows checked in the right hand table and all other reserves are shaded red). If colours are difficult to differentiate, hovering over the shaded region will show the name of the site.', divider='green')
+                st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve.')
                 # Display the map
                 folium_static(m, width=1000,height=650)
 
