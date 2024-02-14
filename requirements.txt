@@ -6,6 +6,6 @@ plotly==5.9.0
 folium==0.15.1
 geopandas==0.14.2
 requests==2.31.0
-pip install datapoint==0.9.8
+datapoint==0.9.8
 haversine==2.8.1
 shapely==2.0.2
