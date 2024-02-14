@@ -91,7 +91,8 @@ with st.expander("**Application instructions**"):
         **Step 2.** Specify maximum travelling distance (this will be "as the crow flies" distance) from postcode to a nature reserve (in miles).\n
         **Step 3.** Select type of weather forecast to show for each reserve (this can be temperature, chance of precipitation or wind speed).\n
         **Step 4.** (Optional) Change the base map, this can be adjusted to make the nature reserves more visible.\n
-        Once these inputs have been specified, you can visualise local reserves on the output map. In addition to an interactive map, the following breakdown is also supplied:\n
+        **Step 5.** Press the 'Confirm' button.\n
+        Once these inputs have been specified and the 'Confirm' button clicked, you can visualise local reserves on the output map. In addition to an interactive map, the following breakdown is also supplied:\n
         * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
         * A five day weather forecast on temperature, precipitation and wind speed.
     ''')
@@ -134,7 +135,7 @@ except:
 mapping, information = st.columns((3, 2))
 
 # Only running code once postcode has been entered
-if postcode_entered and run_button.button('Confirm settings'):
+if postcode_entered and run_button.button('Confirm'):
 
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
