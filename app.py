@@ -102,6 +102,8 @@ gdf = fetch_geojson()
 
 # User settings
 postcode_settings, distance_settings, weather_settings, map_settings, run_button = st.columns((2, 2, 2, 2, 1))
+# Position button below empty space
+run_button.write('')
 postcode = postcode_settings.text_input('Enter valid UK postcode', value="", 
 max_chars=None, 
 key=None, 
