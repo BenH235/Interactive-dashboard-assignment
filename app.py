@@ -225,7 +225,7 @@ if postcode_entered:
                         </style>
                         """, unsafe_allow_html=True)
                 st.subheader('Mapping nature reserves', help='If the nature reserves are difficult to spot, try changing the basemap in the above settings. The shaded areas represent nature reserves (blue for reserves with "Show weather forecast" rows checked in the right hand table and all other reserves are shaded red). If colours are difficult to differentiate, hovering over the shaded region will show the name of the site.', divider='green')
-                st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. The map is interactive, so feel free to change the zoom or use your mouse to click and drag inside the map to explore other nature reserves!')
+                st.caption('The dashed circle represents the threshold travel distance (centered at the input postcode). Hover over a nature reserve (shaded regions on the map) to show the name of the reserve. The map is interactive, so feel free to change the zoom or use your mouse to click and drag inside the map to explore other nature reserves')
                 # Display the map
                 folium_static(m, width=1000,height=650)
 
