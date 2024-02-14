@@ -135,7 +135,7 @@ except:
 mapping, information = st.columns((3, 2))
 
 # Only running code once postcode has been entered
-if postcode_entered and run_button.button('Confirm', use_container_width=False):
+if postcode_entered and run_button.button('Confirm', use_container_width=True):
 
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
