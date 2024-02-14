@@ -100,7 +100,7 @@ with st.expander("**Application instructions**"):
 gdf = fetch_geojson()
 
 # User settings
-postcode_settings, distance_settings, weather_settings, map_settings = st.columns((2, 2, 2, 2))
+postcode_settings, distance_settings, weather_settings, map_settings, run_button = st.columns((2, 2, 2, 2, 1))
 postcode = postcode_settings.text_input('Enter valid UK postcode', value="", 
 max_chars=None, 
 key=None, 
@@ -134,7 +134,7 @@ except:
 mapping, information = st.columns((3, 2))
 
 # Only running code once postcode has been entered
-if postcode_entered:
+if postcode_entered and run_button.button('Confirm settings'):
 
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
