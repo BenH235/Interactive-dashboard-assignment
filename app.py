@@ -239,8 +239,6 @@ if postcode_entered:
             # Get the nearest site for my latitude and longitude
                 site = conn.get_nearest_forecast_site(locs.y, locs.x)
 
-                st.write(dir(site))
-
                 # Get a forecast for my nearest site with 3 hourly timesteps
                 forecast = conn.get_forecast_for_site(site.id, "daily")
                 date_list = []
