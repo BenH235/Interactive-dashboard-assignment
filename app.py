@@ -141,7 +141,7 @@ if run_button.button('Confirm', use_container_width=True):
     st.session_state.button_clicked = True
 
 # Only running code once postcode has been entered
-if postcode_entered and session_state.button_clicked:
+if postcode_entered and st.session_state.button_clicked:
 
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
