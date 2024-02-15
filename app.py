@@ -73,7 +73,10 @@ def fetch_geojson():
     gdf = gpd.GeoDataFrame.from_features(r.json()["features"], crs='EPSG:4326')
     return gdf
 
-
+# Initialise session state
+if 'button_clicked' not in st.session_state:
+    st.session_state['button_clicked'] = False
+    
 # Streamlit application 
 st.set_page_config(page_title='Local Nature Reserve Finder', 
                    layout='wide', 
