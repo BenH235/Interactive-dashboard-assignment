@@ -81,9 +81,9 @@ st.set_page_config(page_title='Local Nature Reserve Finder',
 
 st.title('Local Nature Reserve Finder')
 st.caption("Local Nature Reserves (LNRs) are designated areas for conservation and enjoyment of nature \
-within the local community. They provide natural habitats for wildlife and offer people the oppertunity to learn, study and enjoy nature \
+within the local community. They provide natural habitats for wildlife and offer people the opportunity to learn, study, and enjoy nature \
 (find more information [here](https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::local-nature-reserves-england/about)).\nThis application helps you find the location of nearby LNRs (within a certain travelling distance). \
-In addition to highlighting nearby reserves, a five day weather forecast at each local site is also provided, in order to help make a more informed decision on which reserve to visit.")
+In addition to highlighting nearby reserves, a five-day weather forecast at each local site is also provided in order to help make a more informed decision on which reserve to visit.")
 
 with st.expander("**Application instructions**"):
     st.write('''
@@ -94,7 +94,7 @@ with st.expander("**Application instructions**"):
         **Step 5.** Press the 'Confirm' button.\n
         Once these inputs have been specified and the 'Confirm' button clicked, you can visualise local reserves on the output map. In addition to an interactive map, the following breakdown is also supplied:\n
         * A table showing the reserves within the distance threshold (ordered by locality), which can be downloaded to CSV.
-        * A five day weather forecast on temperature, precipitation and wind speed.
+        * A five-day weather forecast on temperature, precipitation and wind speed.
     ''')
 
 # Bring in LNR data
