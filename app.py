@@ -156,7 +156,7 @@ if postcode_entered and run_button.button('Confirm', use_container_width=True):
             # Further information in app (local reserves table)
             with information:
                 # Dataframe
-                st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different LNRs')
+                st.subheader("Local nature reserves", help='Downloadable table showing sites within distance threshold (ordered by locality). Check boxes in the "Show weather forecast" column if you wish visualise the weather forecast for the chosen sites below (by default, the weather for the closest reserve is selected). Note, you can check multiple sites to compare the forecast across different LNRs.')
                 selection = dataframe_with_selections(nearby_parks.sort_values(by = 'distance (miles)', 
                 ascending = True).reset_index(drop=True))
 
@@ -286,7 +286,7 @@ if postcode_entered and run_button.button('Confirm', use_container_width=True):
             ))
             # Add Plotly graph to app
             information.plotly_chart(fig, use_container_width=True)
-            information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference)')
+            information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference).')
 
 
 
