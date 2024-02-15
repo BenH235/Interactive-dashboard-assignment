@@ -136,8 +136,12 @@ except:
 # Split streamlit app into two columns
 mapping, information = st.columns((3, 2))
 
+# Setting session_state for button
+if st.button('Confirm', use_container_width=True):
+    session_state.button_clicked = True
+
 # Only running code once postcode has been entered
-if postcode_entered and run_button.button('Confirm', use_container_width=True):
+if postcode_entered and session_state.button_clicked:
 
     # Get distance from postcode to each polygon
     gdf['distance'] = gdf['geometry'].apply(distance_from_poly, args=(lat, lon))
