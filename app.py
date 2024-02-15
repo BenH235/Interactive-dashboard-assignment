@@ -135,6 +135,7 @@ try:
 except:
     st.warning('Please enter valid postcode to use this application', icon="⚠️")
     postcode_entered = False
+    st.session_state['button_clicked'] = False
 
 # Split streamlit app into two columns
 mapping, information = st.columns((3, 2))
@@ -294,8 +295,3 @@ if postcode_entered and st.session_state.button_clicked:
             # Add Plotly graph to app
             information.plotly_chart(fig, use_container_width=True)
             information.caption('Forecasts are provided at 12am and 12pm for the next 5 days and are updated hourly. For more information on the forecasts [click here](https://www.metoffice.gov.uk/services/data/datapoint/api-reference).')
-
-
-
-
-
