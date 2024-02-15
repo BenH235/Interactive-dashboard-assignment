@@ -137,8 +137,8 @@ except:
 mapping, information = st.columns((3, 2))
 
 # Setting session_state for button
-if st.button('Confirm', use_container_width=True):
-    session_state.button_clicked = True
+if run_button.button('Confirm', use_container_width=True):
+    st.session_state.button_clicked = True
 
 # Only running code once postcode has been entered
 if postcode_entered and session_state.button_clicked:
